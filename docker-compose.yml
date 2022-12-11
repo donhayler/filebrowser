@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: bash -c "python app.py -p /mnt/files"
+    container_name: filebrowser
+    volumes:
+      - .:/filebrowser
+      # Note: This could be done by creating the volume here using an environment
+      # variable to specify the host path, but having the user create the volume
+      # provides much more flexibility.
+      - files_volume:/mnt/files
+    ports:
+      - "9007:9007"
+volumes:
+  files_volume:
+    external: true

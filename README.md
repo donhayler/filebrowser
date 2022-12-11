@@ -1,7 +1,7 @@
 # File Browser REST API
 
 This is a simple file browser REST API I built while learning Python and Flask.
-.  It provides GET operations and a swagger doc UI.
+It provides GET operations and a swagger doc UI in a Docker container.
 
 In order to run this application, create a named docker volume called
 "files_volume" that contains the root directory the application should use.
@@ -23,7 +23,7 @@ The code can be tested using the `python -m unittest` command.
 The Swagger json is available at http://localhost:9007/api/spec and the
 Swagger UI is available at http://localhost:9007/api/docs.
 
-## Notes
+## Process Notes
 
 To set up a new Python project:
 
@@ -33,17 +33,38 @@ To set up a new Python project:
 1. source venv/bin/activate
 1. pip install <whatever packages you need>
 
-I decided to use Flask instead of Django because it seemed simpler for a basic
-REST API.
+To shut down the Docker container and remove the named volume:
 
-## References
+1. docker ps
+1. docker stop <container ID from previous step>
+1. docker volume rm files_volume
+1. docker rm <ID(s) from error from previous command, if present>
+1. docker volume rm files_volume (again)
+1. docker volume ls (to verify that it's gone)
 
-1. https://pypi.org/project/flask-swagger/
-1. https://pypi.org/project/flask-swagger-ui/
+## Dependencies
 
 I really enjoyed learning Python and some of the ways it is drastically different
 from Java, the language I most commonly use.  I was pleasantly surprised at how
 well the Flask and swagger packages worked and how easy they were to use.
+
+I decided to use Flask instead of Django because it seemed simpler for a basic
+REST API.
+
+1. https://pypi.org/project/flask-swagger/
+1. https://pypi.org/project/flask-swagger-ui/
+
+Testing Flask:
+
+1. https://tedboy.github.io/flask/flask_doc.testing.html
+
+Dockerizing the application:
+
+1. https://medium.com/backticks-tildes/how-to-dockerize-a-django-application-a42df0cb0a99
+1. I used the official Docker python image at https://hub.docker.com/_/python
+because it is kept very up-to-date and the slim-bullseye version is fairly
+small.  This page was helpful in determining which image to use:
+https://pythonspeed.com/articles/base-image-python-docker-images/
 
 ## Issues
 
@@ -67,3 +88,6 @@ the test client.  Ideally we would test that the Swagger UI is present in unit
 tests, although we probably do not want to test it exhaustively.  It might be a
 good idea to check for errors in the UI via unit test to catch cases where the
 Swagger data in the code is invalid.
+1. Test coverage was not checked.
+1. Build and test should be automated with a CI/CD pipeline (using Semaphore
+as described here? https://semaphoreci.com/community/tutorials/dockerizing-a-python-django-web-application)
